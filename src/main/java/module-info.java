@@ -1,0 +1,31 @@
+module com.modbus.reports {
+    requires java.base;
+    requires javafx.controls;
+    requires javafx.fxml;
+    requires plc4j.api;
+    requires lombok;
+    requires java.prefs;
+    requires com.fasterxml.jackson.databind;
+    requires org.apache.commons.io;
+    requires org.apache.poi.poi;
+    requires org.apache.poi.ooxml;
+//  requires org.apache.poi.ooxml.schemas;
+    requires org.apache.poi.scratchpad;
+    requires xdocreport;
+    requires java.desktop;
+    requires org.apache.commons.lang3;
+    requires jlibmodbus;
+//    requires poi.ooxml.schemas;
+//    requires ooxml.schemas;
+    opens com.modbus.reports to javafx.fxml;
+    exports com.modbus.reports;
+    exports com.modbus.reports.model.modbusVariables;
+    exports com.modbus.reports.model.parsers.docx;
+    opens com.modbus.reports.model.parsers.docx to javafx.fxml;
+    exports com.modbus.reports.model.controllers;
+    opens com.modbus.reports.model.controllers to javafx.fxml;
+    exports com.modbus.reports.model.automationProtocols.modbus;
+    opens com.modbus.reports.model.automationProtocols.modbus to javafx.fxml;
+    exports com.modbus.reports.view;
+    opens com.modbus.reports.view to javafx.fxml;
+}
