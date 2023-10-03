@@ -29,26 +29,23 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Controller {
-
+    @FXML
+    private AnchorPane anchorPane;
+    @FXML
+    private Ellipse ellipseConnect;
+    @FXML
+    private TextField ipAddress;
     @FXML
     private TextField svAddress;
-
     @FXML
     private TextField svAlias;
-
     @FXML
     private TextField svDescription;
-
     @FXML
     private TextField svName;
-
-
-    private String svValue;
-
-    @FXML
-    private Button saveReports;
     @FXML
     private TableView<Variables> tbVariables;
     @FXML
@@ -64,17 +61,18 @@ public class Controller {
     @FXML
     private TableColumn<Variables, String> tbValue;
     @FXML
-    private AnchorPane anchorPane;
-    @FXML
-    private Ellipse ellipseConnect;
-    @FXML
-    private TextField ipAddress;
-    @FXML
-    private Button checkConnectButton;
-    @FXML
     private Label labelForTemplatesDocx;
     @FXML
     private Label reportSaveSuccessfully;
+    @FXML
+    private Button checkConnectButton;
+    @FXML
+    private Button saveReports;
+    @FXML
+    private Button svSave;
+    @FXML
+    private Button svUpdate;
+    private String svValue;
     private int idForService = 0;
     private Path filePath = new File("src/main/resources").toPath();
     private Path selFile;
@@ -86,7 +84,6 @@ public class Controller {
 
     public Controller() {
     }
-
     @FXML
     protected void onSvSave () {
         variableService.createVariables(svName.getText(),svAddress.getText(),svDescription.getText(),svAlias.getText(), "нет данных");
@@ -162,7 +159,32 @@ public class Controller {
             }
         });
         connect.start();
-
+        svSave.setDisable(true);
+        svUpdate.setDisable(true);
+//        svName.textProperty().addListener((observable, oldValue, newValue) -> {
+//            if (newValue != null) {
+//                svSave.setDisable(!newValue.matches(".+"));
+//            } else {
+//                svSave.setDisable(true);
+//            }
+//        });
+//        svAlias.textProperty().addListener((observable, oldValue, newValue) -> {
+//            if (newValue != null) {
+//                svSave.setDisable(!newValue.matches(".+"));
+//            } else {
+//                svSave.setDisable(true);
+//            }
+//        });
+//        svAddress.textProperty().addListener((observable, oldValue, newValue) -> {
+//            if (newValue != null) {
+//                svSave.setDisable(!newValue.matches("\\d+"));
+//                System.out.println(newValue);
+//            } else {
+//                svSave.setDisable(true);
+//            }
+//        });
+        System.out.println("Итог: "+addListenerFields().get());
+        svSave.setDisable(addListenerFields().get());
         showData();
         saveReports.setDisable(true);
         FadeTransition ft = new FadeTransition(Duration.millis(1000), anchorPane);
@@ -180,6 +202,38 @@ public class Controller {
             anchorPane.setDisable(false);
         });
         checkConnect.start();
+    }
+    private AtomicBoolean addListenerFields(){
+        AtomicBoolean isEmptyFields = new AtomicBoolean(false);
+        svName.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                isEmptyFields.set(!newValue.matches(".+"));
+                System.out.println("ввод svName: "+isEmptyFields);
+            } else {
+                isEmptyFields.set(true);
+                System.out.println("ввод svName: "+isEmptyFields);
+            }
+        });
+        svAlias.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                isEmptyFields.set(!newValue.matches(".+"));
+                System.out.println("ввод svAlias: "+isEmptyFields);
+                } else {
+                isEmptyFields.set(true);
+                System.out.println("ввод svAlias: "+isEmptyFields);
+            }
+        });
+        svAddress.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                isEmptyFields.set(!newValue.matches("\\d+"));
+                System.out.println("ввод svAddress: "+isEmptyFields);
+            } else {
+                isEmptyFields.set(true);
+                System.out.println("ввод svAddress: "+isEmptyFields);
+            }
+        });
+
+        return isEmptyFields;
     }
     private void showData(){
         tbId.setCellValueFactory(new PropertyValueFactory<>("id"));
