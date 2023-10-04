@@ -1,10 +1,7 @@
 package com.modbus.reports.model.parsers.docx;
 
 import com.modbus.reports.model.modbusVariables.Variables;
-import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import lombok.Getter;
-import lombok.Setter;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.xwpf.usermodel.*;
@@ -21,32 +18,7 @@ import java.awt.Desktop;
 import java.util.concurrent.TimeUnit;
 
 public class ParserProviderDOCX implements ParserProvider {
-    private String textInput;
-    private XWPFDocument document;
-    @Getter
-    @Setter
     private Path path;
-    @Getter
-    @Setter
-    private TableColumn<Variables, Integer> parseId;
-    @Getter
-    @Setter
-    private TableColumn<Variables, Integer> parseName;
-    @Getter
-    @Setter
-    private TableColumn<Variables, Integer> parseAddress;
-    @Getter
-    @Setter
-    private TableColumn<Variables, Integer> parseDescription;
-    @Getter
-    @Setter
-    private TableColumn<Variables, Integer> parseAlias;
-    @Getter
-    @Setter
-    private TableColumn<Variables, Integer> parseVariables;
-    @Getter
-    @Setter
-    private boolean isSuccessfulProcessing;
     String fileWithoutExtension;
 
     @Override

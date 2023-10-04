@@ -11,11 +11,9 @@ import java.nio.file.Path;
 
 public interface ParserService {
 
-
     void setTbVariables(TableView<Variables> tbVariables);
 
     void setPathService(Path pathService);
     boolean read () throws IOException, InvalidFormatException;
 
-    // getTest();
 }

@@ -18,12 +18,10 @@ public class ParserServiceImpl implements ParserService{
     public void setTbVariables(TableView<Variables> tbVariables) {
         this.tbVariables = tbVariables;
     }
-
     @Override
     public void setPathService(Path pathService) {
         this.pathService = pathService;
     }
-
     public ParserServiceImpl(ParserProvider parserProvider) {
         this.parserProvider = parserProvider;
     }

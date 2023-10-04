@@ -12,8 +12,6 @@ import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -26,7 +24,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Ellipse;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
-import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
 import java.io.File;
@@ -34,7 +32,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -93,7 +90,6 @@ public class Controller {
     BooleanProperty booleanPropertyName = new SimpleBooleanProperty(true);
     BooleanProperty booleanPropertyAlias = new SimpleBooleanProperty(true);
     BooleanProperty booleanPropertyAddress = new SimpleBooleanProperty(true);
-    //ArrayList<BooleanProperty> list = new ArrayList<>();
     ObservableList<BooleanProperty> list = FXCollections.observableArrayList();
 
     public Controller() {
@@ -154,7 +150,7 @@ public class Controller {
                     checkConnectButton.setDisable(false);
 
                 }
-            } catch (InterruptedException | PlcConnectionException | ExecutionException e) {
+            } catch (InterruptedException | ExecutionException e) {
                 Alert.display("Ethernet error", String.valueOf(e));
             }
 
@@ -168,7 +164,7 @@ public class Controller {
             protocolsService.setTbVariables(tbVariables);
             try {
                 protocolsService.connecting();
-             } catch (InterruptedException | PlcConnectionException | ExecutionException e) {
+             } catch (InterruptedException | ExecutionException e) {
                 throw new RuntimeException(e);
             }
         });
@@ -186,12 +182,14 @@ public class Controller {
         list.add(booleanPropertyAddress);
         list.add(booleanPropertyAlias);
         list.addListener((ListChangeListener.Change<? extends BooleanProperty> c) -> {
+            Variables variables = tbVariables.getSelectionModel().getSelectedItem();
             while (c.next()) {
                 boolean isInputName = c.getList().get(0).get();
                 boolean isInputAddress = c.getList().get(1).get();
                 boolean isInputAlias = c.getList().get(2).get();
+                boolean isSelect = variables == null;
                 svSave.setDisable(isInputName || isInputAddress || isInputAlias);
-                svUpdate.setDisable(isInputName || isInputAddress || isInputAlias);
+                svUpdate.setDisable(isInputName || isInputAddress || isInputAlias || isSelect);
             }
         });
         FadeTransition ft = new FadeTransition(Duration.millis(1000), anchorPane);

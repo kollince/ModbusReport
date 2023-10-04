@@ -1,6 +1,5 @@
 package com.modbus.reports.model.modbusVariables;
 
-
 public class Variables {
     private int id;
     private String name;
@@ -21,7 +20,6 @@ public class Variables {
     public Variables(){
 
     }
-
     public int getId() {
         return id;
     }

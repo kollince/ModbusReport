@@ -17,7 +17,6 @@ public class DataProviderJSON implements DataProvider{
         mapper.writeValue(FILEPATH.toFile(), dataListVariables);
         //final Path FILEPATH = Path.of("./data.json");
     }
-
     @Override
     public Collection<Variables> load() throws IOException {
         return mapper.readValue(FILEPATH.toFile(), new TypeReference<>() {
