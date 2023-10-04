@@ -75,7 +75,10 @@ public class ParserProviderDOCX implements ParserProvider {
         fileWithoutExtension = path.getFileName().toString().substring(0, dotIndex);
         FileOutputStream fos;
         try {
-            fos = new FileOutputStream("src/main/resources/outParsing/" + fileWithoutExtension + "_out.docx");
+            String dir = "src/main/resources/outParsing";
+            File directory = new File(dir);
+            directory.mkdir();
+            fos = new FileOutputStream(dir + "/" + fileWithoutExtension + "_out.docx");
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
