@@ -45,7 +45,7 @@
                               <Font size="14.0" />
                            </font>
                         </Label>
-                        <Label fx:id="checkConnectText" layoutX="10.0" layoutY="10.0" text="Проверка соединения">
+                        <Label fx:id="checkConnectText" layoutX="10.0" layoutY="10.0" text="Соединение">
                            <font>
                               <Font size="14.0" />
                            </font>
