@@ -10,6 +10,13 @@ import com.modbus.reports.view.Alert;
 import com.modbus.reports.model.modbusVariables.Variables;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.control.*;
@@ -27,6 +34,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -81,6 +89,12 @@ public class Controller {
     private final ParserService parserService = new ParserServiceImpl(parserProvider);
     private final Protocols protocols = new ModbusJLib();
     private final ProtocolsService protocolsService = new ProtocolsServiceImpl(protocols);
+    AtomicBoolean isEmptyFields = new AtomicBoolean(false);
+    BooleanProperty booleanPropertyName = new SimpleBooleanProperty(true);
+    BooleanProperty booleanPropertyAlias = new SimpleBooleanProperty(true);
+    BooleanProperty booleanPropertyAddress = new SimpleBooleanProperty(true);
+    //ArrayList<BooleanProperty> list = new ArrayList<>();
+    ObservableList<BooleanProperty> list = FXCollections.observableArrayList();
 
     public Controller() {
     }
@@ -161,32 +175,25 @@ public class Controller {
         connect.start();
         svSave.setDisable(true);
         svUpdate.setDisable(true);
-//        svName.textProperty().addListener((observable, oldValue, newValue) -> {
-//            if (newValue != null) {
-//                svSave.setDisable(!newValue.matches(".+"));
-//            } else {
-//                svSave.setDisable(true);
-//            }
+        addListenerFields();
+//        booleanProperty.addListener((observable, oldValue, newValue) -> {
+//            System.out.println("bool: "+newValue);
+//            svSave.setDisable(!newValue);
 //        });
-//        svAlias.textProperty().addListener((observable, oldValue, newValue) -> {
-//            if (newValue != null) {
-//                svSave.setDisable(!newValue.matches(".+"));
-//            } else {
-//                svSave.setDisable(true);
-//            }
-//        });
-//        svAddress.textProperty().addListener((observable, oldValue, newValue) -> {
-//            if (newValue != null) {
-//                svSave.setDisable(!newValue.matches("\\d+"));
-//                System.out.println(newValue);
-//            } else {
-//                svSave.setDisable(true);
-//            }
-//        });
-        System.out.println("Итог: "+addListenerFields().get());
-        svSave.setDisable(addListenerFields().get());
         showData();
         saveReports.setDisable(true);
+        list.add(booleanPropertyName);
+        list.add(booleanPropertyAddress);
+        list.add(booleanPropertyAlias);
+        list.addListener((ListChangeListener.Change<? extends BooleanProperty> c) -> {
+            while (c.next()) {
+                boolean isInputName = c.getList().get(0).get();
+                boolean isInputAddress = c.getList().get(1).get();
+                boolean isInputAlias = c.getList().get(2).get();
+                svSave.setDisable(isInputName || isInputAddress || isInputAlias);
+                svUpdate.setDisable(isInputName || isInputAddress || isInputAlias);
+            }
+        });
         FadeTransition ft = new FadeTransition(Duration.millis(1000), anchorPane);
         ft.setFromValue(0.0);
         ft.setToValue(1.0);
@@ -203,37 +210,34 @@ public class Controller {
         });
         checkConnect.start();
     }
-    private AtomicBoolean addListenerFields(){
-        AtomicBoolean isEmptyFields = new AtomicBoolean(false);
+    private void addListenerFields(){
         svName.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
-                isEmptyFields.set(!newValue.matches(".+"));
-                System.out.println("ввод svName: "+isEmptyFields);
+                booleanPropertyName.set(!newValue.trim().matches(".+"));
+                list.set(0,booleanPropertyName);
             } else {
-                isEmptyFields.set(true);
-                System.out.println("ввод svName: "+isEmptyFields);
+                booleanPropertyName.set(true);
+                list.set(0,booleanPropertyName);
+               }
+        });
+        svAddress.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                booleanPropertyAddress.set(!newValue.trim().matches("\\d+"));
+                list.set(1,booleanPropertyAddress);
+            } else {
+                booleanPropertyAddress.set(true);
+                list.set(1,booleanPropertyAddress);
             }
         });
         svAlias.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
-                isEmptyFields.set(!newValue.matches(".+"));
-                System.out.println("ввод svAlias: "+isEmptyFields);
-                } else {
-                isEmptyFields.set(true);
-                System.out.println("ввод svAlias: "+isEmptyFields);
-            }
-        });
-        svAddress.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                isEmptyFields.set(!newValue.matches("\\d+"));
-                System.out.println("ввод svAddress: "+isEmptyFields);
+                booleanPropertyAlias.set(!newValue.trim().matches(".+"));
+                list.set(2,booleanPropertyAlias);
             } else {
-                isEmptyFields.set(true);
-                System.out.println("ввод svAddress: "+isEmptyFields);
+                booleanPropertyAlias.set(true);
+                list.set(2,booleanPropertyAlias);
             }
         });
-
-        return isEmptyFields;
     }
     private void showData(){
         tbId.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -252,6 +256,7 @@ public class Controller {
         svDescription.setText(variables.getDescription());
         svAlias.setText(variables.getAlias());
         idForService = variables.getId();
+        svUpdate.setDisable(false);
     }
     @FXML
     public void onSelectFile () {
