@@ -94,9 +94,9 @@ public class ModbusJLib implements Protocols {
 
                                         int high = 15820; // the high 16 bits
                                         int low = 52429; // the low 16 bits
-                                        int first_part = b2 << 16;
-                                        int second_part = first_part | b1;
-                                        float num = Float.intBitsToFloat(second_part);
+                                        int firstPart = b2 << 16;
+                                        int secondPart = firstPart | b1;
+                                        float num = Float.intBitsToFloat(secondPart);
 //                                        outValues.add(registerValues[reg]);
                                         outValues.add(num);
                                         //System.out.println("Число: " + num);
