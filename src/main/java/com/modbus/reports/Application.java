@@ -5,8 +5,9 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class Application extends javafx.application.Application {
     @Override
@@ -14,7 +15,7 @@ public class Application extends javafx.application.Application {
         FXMLLoader fxmlLoader = new FXMLLoader(Application.class.getResource("main-form-2.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 1062, 477);
         stage.setTitle("Reports");
-        stage.getIcons().add(new Image(new FileInputStream("src/main/resources/images/connectOn.png")));
+        stage.getIcons().add(new Image(Files.newInputStream(Paths.get("src/main/resources/images/connectOn.png"))));
         stage.setScene(scene);
         stage.setResizable(false);
         stage.show();

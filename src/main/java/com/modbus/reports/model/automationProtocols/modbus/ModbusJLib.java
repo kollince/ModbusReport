@@ -76,9 +76,9 @@ public class ModbusJLib implements Protocols {
                                     min = Integer.parseInt(tbVariables.getItems().get(i).getAddress());
                                 }
                             }
-                            int[] registerValues = m.readHoldingRegisters(slaveId, min, max);
-                            int start = 0;
                             int size = max - min + 1;
+                            int[] registerValues = m.readHoldingRegisters(slaveId, min, size);
+                            int start = 0;
                             outValues = new ArrayList<>();
                             for (int i = 0; i < size; i++) {
                                 start = start + 1;
@@ -88,6 +88,18 @@ public class ModbusJLib implements Protocols {
                                     if (start == idStringTable) {
                                         int reg = address - min;
                                         outValues.add(registerValues[reg]);
+                                        int high = 52429; // the high 16 bits
+                                        int low = 15820; // the low 16 bits
+                                        int first_part = high << 16;
+                                        int second_part = first_part | low;
+                                        float num = Float.intBitsToFloat(second_part);
+                                        System.out.println(first_part + " " + second_part + " " + num + '\n');
+                                        int high1 = 52429; // the high 16 bits
+                                        int low1 = 15820; // the low 16 bits
+                                        int combined1 = (high1 << 16) | low1;
+
+                                        float num1 = Float.intBitsToFloat(combined1);
+                                        System.out.println(num1 + " " + combined1);
                                     }
                                 }
                             }
@@ -114,4 +126,3 @@ public class ModbusJLib implements Protocols {
         }
     }
 }
-
