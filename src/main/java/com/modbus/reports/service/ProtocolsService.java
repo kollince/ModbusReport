@@ -9,6 +9,6 @@ import java.util.concurrent.ExecutionException;
 public interface ProtocolsService {
     void setTbVariables(TableView<Variables> tbVariables);
     void setNode(String node);
-    List<Integer> connecting() throws InterruptedException, ExecutionException;
+    List<Float> connecting() throws InterruptedException, ExecutionException;
     boolean isConnectProtocol();
 }

@@ -17,7 +17,7 @@ import java.util.concurrent.*;
 
 public class ModbusJLib implements Protocols {
     @Override
-    public List<Integer> transfer(String ip, TableView<Variables> tbVariables) throws InterruptedException {
+    public List<Float> transfer(String ip, TableView<Variables> tbVariables) throws InterruptedException {
         if (tbVariables != null) {
             ExecutorService executor = Executors.newCachedThreadPool();
             CountDownLatch latch = new CountDownLatch(1);
@@ -40,8 +40,8 @@ public class ModbusJLib implements Protocols {
         return TasksJLib.isDone;
     }
     private record TasksJLib(TableView<Variables> tbVariables, String node) implements Runnable {
-        static private List<Integer> outValues;
-        static private List<Integer> getOutValues() {
+        static private List<Float> outValues;
+        static private List<Float> getOutValues() {
             return outValues;
         }
         static boolean isDone;
@@ -76,7 +76,7 @@ public class ModbusJLib implements Protocols {
                                     min = Integer.parseInt(tbVariables.getItems().get(i).getAddress());
                                 }
                             }
-                            int size = max - min + 1;
+                            int size = max - min + 2;
                             int[] registerValues = m.readHoldingRegisters(slaveId, min, size);
                             int start = 0;
                             outValues = new ArrayList<>();
@@ -87,19 +87,19 @@ public class ModbusJLib implements Protocols {
                                     int address = Integer.parseInt(tbVariables.getItems().get(j).getAddress());
                                     if (start == idStringTable) {
                                         int reg = address - min;
-                                        outValues.add(registerValues[reg]);
-                                        int high = 52429; // the high 16 bits
-                                        int low = 15820; // the low 16 bits
-                                        int first_part = high << 16;
-                                        int second_part = first_part | low;
-                                        float num = Float.intBitsToFloat(second_part);
-                                        System.out.println(first_part + " " + second_part + " " + num + '\n');
-                                        int high1 = 52429; // the high 16 bits
-                                        int low1 = 15820; // the low 16 bits
-                                        int combined1 = (high1 << 16) | low1;
+                                        int b1 = registerValues[reg];
+                                        int b2 = registerValues[reg+1];
+//                                        System.out.println(registerValues[reg]);
+//                                        System.out.println(registerValues[reg+1]);
 
-                                        float num1 = Float.intBitsToFloat(combined1);
-                                        System.out.println(num1 + " " + combined1);
+                                        int high = 15820; // the high 16 bits
+                                        int low = 52429; // the low 16 bits
+                                        int first_part = b2 << 16;
+                                        int second_part = first_part | b1;
+                                        float num = Float.intBitsToFloat(second_part);
+//                                        outValues.add(registerValues[reg]);
+                                        outValues.add(num);
+                                        //System.out.println("Число: " + num);
                                     }
                                 }
                             }
