@@ -65,44 +65,71 @@ public class ModbusJLib implements Protocols {
                             if (!m.isConnected()) {
                                 m.connect();
                             }
-                            int defaultValue = Integer.parseInt(tbVariables.getItems().get(0).getAddress());
-                            int max = defaultValue;
-                            int min = defaultValue;
-                            for (int i = 0; i < tbVariables.getItems().size(); i++) {
-                                if (Integer.parseInt(tbVariables.getItems().get(i).getAddress()) > max) {
-                                    max = Integer.parseInt(tbVariables.getItems().get(i).getAddress());
-                                }
-                                if (Integer.parseInt(tbVariables.getItems().get(i).getAddress()) < min) {
-                                    min = Integer.parseInt(tbVariables.getItems().get(i).getAddress());
-                                }
-                            }
-                            int size = max - min + 2;
-                            int[] registerValues = m.readHoldingRegisters(slaveId, min, size);
-                            int start = 0;
+//                            int defaultValue = Integer.parseInt(tbVariables.getItems().get(0).getAddress());
+//                            int max = defaultValue;
+//                            int min = defaultValue;
+//                            for (int i = 0; i < tbVariables.getItems().size(); i++) {
+//                                if (Integer.parseInt(tbVariables.getItems().get(i).getAddress()) > max) {
+//                                    max = Integer.parseInt(tbVariables.getItems().get(i).getAddress());
+//                                }
+//                                if (Integer.parseInt(tbVariables.getItems().get(i).getAddress()) < min) {
+//                                    min = Integer.parseInt(tbVariables.getItems().get(i).getAddress());
+//                                }
+//                            }
+//                            int size = max - min + 2;
+//                            int[] registerValues = m.readHoldingRegisters(slaveId, min, size);
+
+                            int start = 1;
                             outValues = new ArrayList<>();
-                            for (int i = 0; i < size; i++) {
-                                start = start + 1;
+
+//                            for (int i = 0; i < 10; i++) {
+//                                start = start + 1;
+                                System.out.println();
                                 for (int j = 0; j < tbVariables.getItems().size(); j++) {
+                                    start = start + 1;
                                     int idStringTable = tbVariables.getItems().get(j).getId();
                                     int address = Integer.parseInt(tbVariables.getItems().get(j).getAddress());
+                                    int[] registerValues = m.readHoldingRegisters(slaveId, address, 2);
                                     if (start == idStringTable) {
-                                        int reg = address - min;
-                                        int b1 = registerValues[reg];
-                                        int b2 = registerValues[reg+1];
-//                                        System.out.println(registerValues[reg]);
-//                                        System.out.println(registerValues[reg+1]);
+                                        //int reg = address - min;
+                                        System.out.println("j, "+j+", ID - "+idStringTable+", start: "+start+", Адрес: "+address+", Значение: "+registerValues[0]);
 
-                                        int high = 15820; // the high 16 bits
-                                        int low = 52429; // the low 16 bits
+                                        int b1 = registerValues[0];
+                                        int b2 = registerValues[1];
                                         int firstPart = b2 << 16;
                                         int secondPart = firstPart | b1;
                                         float num = Float.intBitsToFloat(secondPart);
-//                                        outValues.add(registerValues[reg]);
                                         outValues.add(num);
-                                        //System.out.println("Число: " + num);
                                     }
                                 }
-                            }
+//                            }
+//                            int size = max - min + 2;
+//                            int[] registerValues = m.readHoldingRegisters(slaveId, min, size);
+//                            int start = 0;
+//                            outValues = new ArrayList<>();
+//                            for (int i = 0; i < size; i++) {
+//                                start = start + 1;
+//                                for (int j = 0; j < tbVariables.getItems().size(); j++) {
+//                                    int idStringTable = tbVariables.getItems().get(j).getId();
+//                                    int address = Integer.parseInt(tbVariables.getItems().get(j).getAddress());
+//                                    if (start == idStringTable) {
+//                                        int reg = address - min;
+//                                        int b1 = registerValues[reg];
+//                                        int b2 = registerValues[reg+1];
+////                                        System.out.println(registerValues[reg]);
+////                                        System.out.println(registerValues[reg+1]);
+//
+//                                        int high = 15820; // the high 16 bits
+//                                        int low = 52429; // the low 16 bits
+//                                        int firstPart = b2 << 16;
+//                                        int secondPart = firstPart | b1;
+//                                        float num = Float.intBitsToFloat(secondPart);
+////                                        outValues.add(registerValues[reg]);
+//                                        outValues.add(num);
+//                                        //System.out.println("Число: " + num);
+//                                    }
+//                                }
+//                            }
                         } catch (ModbusProtocolException | ModbusNumberException | ModbusIOException e) {
                             isDone = false;
                         } finally {

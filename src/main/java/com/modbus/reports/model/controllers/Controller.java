@@ -127,6 +127,7 @@ public class Controller {
         if (svValue == null) {
             svValue = "0";
         }
+
         Thread connect = new Thread(() -> {
             protocolsService.setTbVariables(tbVariables);
             try {
@@ -135,6 +136,7 @@ public class Controller {
                         svValue = String.valueOf(protocolsService.connecting().get(i));
                         int id = tbVariables.getItems().get(i).getId();
                         variableService.updateValue(id, svValue);
+                        System.out.println("Контроллер "+i);
                     }
                     if (protocolsService.isConnectProtocol()) {
                         ellipseConnect.setStyle("-fx-fill: #00CF00; -fx-stroke: #00FF00; ");
