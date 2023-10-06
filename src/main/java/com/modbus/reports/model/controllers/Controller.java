@@ -124,6 +124,7 @@ public class Controller {
     protected void onCheckConnect() {
         protocolsService.setNode(ipAddress.getText());
         checkConnectButton.setDisable(true);
+        System.out.print("\u001B[H\u001B[2J");
         if (svValue == null) {
             svValue = "0";
         }
@@ -132,11 +133,13 @@ public class Controller {
             protocolsService.setTbVariables(tbVariables);
             try {
                 if(protocolsService.connecting()!=null) {
-                    for (int i = 0; i < protocolsService.connecting().size(); i++) {
-                        svValue = String.valueOf(protocolsService.connecting().get(i));
+//                    System.out.println(protocolsService.connecting().size());
+//                    System.out.println(protocolsService.getOutValuesProtocol().size());
+                    for (int i = 0; i < protocolsService.getOutValuesProtocol().size(); i++) {
+                        svValue = String.valueOf(protocolsService.getOutValuesProtocol().get(i));
                         int id = tbVariables.getItems().get(i).getId();
                         variableService.updateValue(id, svValue);
-                        System.out.println("Контроллер "+i);
+                        //System.out.println("Контроллер "+i+", svValue: "+svValue);
                     }
                     if (protocolsService.isConnectProtocol()) {
                         ellipseConnect.setStyle("-fx-fill: #00CF00; -fx-stroke: #00FF00; ");
@@ -164,11 +167,11 @@ public class Controller {
         protocolsService.setNode(ipAddress.getText());
         Thread connect = new Thread(() -> {
             protocolsService.setTbVariables(tbVariables);
-            try {
-                protocolsService.connecting();
-             } catch (InterruptedException | ExecutionException e) {
-                throw new RuntimeException(e);
-            }
+//            try {
+//                protocolsService.connecting();
+//             } catch (InterruptedException | ExecutionException e) {
+//                throw new RuntimeException(e);
+//            }
         });
         connect.start();
         svSave.setDisable(true);
@@ -251,12 +254,14 @@ public class Controller {
     @FXML
     private void handleMouseAction(){
         Variables variables = tbVariables.getSelectionModel().getSelectedItem();
-        svName.setText(variables.getName());
-        svAddress.setText(variables.getAddress());
-        svDescription.setText(variables.getDescription());
-        svAlias.setText(variables.getAlias());
-        idForService = variables.getId();
-        svUpdate.setDisable(false);
+        if (variables!=null) {
+            svName.setText(variables.getName());
+            svAddress.setText(variables.getAddress());
+            svDescription.setText(variables.getDescription());
+            svAlias.setText(variables.getAlias());
+            idForService = variables.getId();
+            svUpdate.setDisable(false);
+        }
     }
     @FXML
     public void onSelectFile () {

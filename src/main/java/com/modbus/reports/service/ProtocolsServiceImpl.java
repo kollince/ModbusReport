@@ -22,8 +22,12 @@ public class ProtocolsServiceImpl implements ProtocolsService{
     public void setNode(String node) {
         this.node = node;
     }
+    @Override
     public List<Float> connecting () throws InterruptedException, ExecutionException {
         return protocols.transfer(node, tbVariables);
+    }
+    public List<Float> getOutValuesProtocol() {
+        return protocols.getOutValuesProtocols();
     }
     @Override
     public boolean isConnectProtocol(){

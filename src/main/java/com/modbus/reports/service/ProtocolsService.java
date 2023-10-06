@@ -10,5 +10,6 @@ public interface ProtocolsService {
     void setTbVariables(TableView<Variables> tbVariables);
     void setNode(String node);
     List<Float> connecting() throws InterruptedException, ExecutionException;
+    public List<Float> getOutValuesProtocol();
     boolean isConnectProtocol();
 }

@@ -8,6 +8,7 @@ import java.util.concurrent.ExecutionException;
 
 public interface Protocols {
     List<Float> transfer(String ip, TableView<Variables> tbVariables) throws InterruptedException, ExecutionException;
+    List<Float> getOutValuesProtocols();
 
     boolean isConnect();
 }

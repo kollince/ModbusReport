@@ -10,12 +10,17 @@ import com.intelligt.modbus.jlibmodbus.tcp.TcpParameters;
 import com.modbus.reports.model.modbusVariables.Variables;
 import javafx.scene.control.TableView;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
 
 public class ModbusJLib implements Protocols {
+    public ModbusJLib() {
+    }
+
     @Override
     public List<Float> transfer(String ip, TableView<Variables> tbVariables) throws InterruptedException {
         if (tbVariables != null) {
@@ -35,6 +40,12 @@ public class ModbusJLib implements Protocols {
         }
         return TasksJLib.getOutValues();
     }
+
+    @Override
+    public List<Float> getOutValuesProtocols() {
+        return TasksJLib.getOutValues();
+    }
+
     @Override
     public boolean isConnect() {
         return TasksJLib.isDone;
@@ -84,7 +95,6 @@ public class ModbusJLib implements Protocols {
 
 //                            for (int i = 0; i < 10; i++) {
 //                                start = start + 1;
-                                System.out.println();
                                 for (int j = 0; j < tbVariables.getItems().size(); j++) {
                                     start = start + 1;
                                     int idStringTable = tbVariables.getItems().get(j).getId();
@@ -93,13 +103,14 @@ public class ModbusJLib implements Protocols {
                                     if (start == idStringTable) {
                                         //int reg = address - min;
                                         System.out.println("j, "+j+", ID - "+idStringTable+", start: "+start+", Адрес: "+address+", Значение: "+registerValues[0]);
-
+                                        //System.out.println("j, "+j+", ID - "+idStringTable+", start: "+start+", Адрес: "+address+", Значение: ");
                                         int b1 = registerValues[0];
                                         int b2 = registerValues[1];
                                         int firstPart = b2 << 16;
                                         int secondPart = firstPart | b1;
                                         float num = Float.intBitsToFloat(secondPart);
-                                        outValues.add(num);
+                                        float newNum = Float.parseFloat(String.valueOf(BigDecimal.valueOf(num).setScale(8, RoundingMode.HALF_UP)));
+                                        outValues.add(newNum);
                                     }
                                 }
 //                            }
@@ -130,7 +141,7 @@ public class ModbusJLib implements Protocols {
 //                                    }
 //                                }
 //                            }
-                        } catch (ModbusProtocolException | ModbusNumberException | ModbusIOException e) {
+                        } catch (ModbusIOException e) {
                             isDone = false;
                         } finally {
                             try {
