@@ -133,13 +133,11 @@ public class Controller {
             protocolsService.setTbVariables(tbVariables);
             try {
                 if(protocolsService.connecting()!=null) {
-//                    System.out.println(protocolsService.connecting().size());
-//                    System.out.println(protocolsService.getOutValuesProtocol().size());
+
                     for (int i = 0; i < protocolsService.getOutValuesProtocol().size(); i++) {
                         svValue = String.valueOf(protocolsService.getOutValuesProtocol().get(i));
                         int id = tbVariables.getItems().get(i).getId();
                         variableService.updateValue(id, svValue);
-                        //System.out.println("Контроллер "+i+", svValue: "+svValue);
                     }
                     if (protocolsService.isConnectProtocol()) {
                         ellipseConnect.setStyle("-fx-fill: #00CF00; -fx-stroke: #00FF00; ");
@@ -167,11 +165,6 @@ public class Controller {
         protocolsService.setNode(ipAddress.getText());
         Thread connect = new Thread(() -> {
             protocolsService.setTbVariables(tbVariables);
-//            try {
-//                protocolsService.connecting();
-//             } catch (InterruptedException | ExecutionException e) {
-//                throw new RuntimeException(e);
-//            }
         });
         connect.start();
         svSave.setDisable(true);

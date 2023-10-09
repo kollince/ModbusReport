@@ -15,7 +15,6 @@ public class DataProviderJSON implements DataProvider{
     @Override
     public void save(ObservableList<Variables> dataListVariables) throws IOException {
         mapper.writeValue(FILEPATH.toFile(), dataListVariables);
-        //final Path FILEPATH = Path.of("./data.json");
     }
     @Override
     public Collection<Variables> load() throws IOException {
