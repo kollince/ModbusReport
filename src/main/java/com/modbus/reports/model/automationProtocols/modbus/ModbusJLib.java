@@ -2,8 +2,6 @@ package com.modbus.reports.model.automationProtocols.modbus;
 
 import com.intelligt.modbus.jlibmodbus.Modbus;
 import com.intelligt.modbus.jlibmodbus.exception.ModbusIOException;
-import com.intelligt.modbus.jlibmodbus.exception.ModbusNumberException;
-import com.intelligt.modbus.jlibmodbus.exception.ModbusProtocolException;
 import com.intelligt.modbus.jlibmodbus.master.ModbusMaster;
 import com.intelligt.modbus.jlibmodbus.master.ModbusMasterFactory;
 import com.intelligt.modbus.jlibmodbus.tcp.TcpParameters;
@@ -84,9 +82,6 @@ public class ModbusJLib implements Protocols {
                                     int address = Integer.parseInt(tbVariables.getItems().get(j).getAddress());
                                     int[] registerValues = m.readHoldingRegisters(slaveId, address, 2);
                                     if (start == idStringTable) {
-                                        //int reg = address - min;
-                                        System.out.println("j, "+j+", ID - "+idStringTable+", start: "+start+", Адрес: "+address+", Значение: "+registerValues[0]);
-                                        //System.out.println("j, "+j+", ID - "+idStringTable+", start: "+start+", Адрес: "+address+", Значение: ");
                                         int b1 = registerValues[0];
                                         int b2 = registerValues[1];
                                         int firstPart = b2 << 16;
